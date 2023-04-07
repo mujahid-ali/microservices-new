@@ -1,0 +1,7 @@
+Do not use this in prod: spring.jpa.hibernate.ddl-auto=create-drop
+this can be used in prod: spring.jpa.hibernate.ddl-auto=none along with liquibase and flyway library.
+
+
+Inter Service communication:
+1: sync -> via http: RestTemplate(by default from Springboot) and WebClient(From Sping web flux project) are two method
+2: async
