@@ -3,5 +3,25 @@ this can be used in prod: spring.jpa.hibernate.ddl-auto=none along with liquibas
 
 
 Inter Service communication:
-1: sync -> via http: RestTemplate(by default from Springboot) and WebClient(From Sping web flux project) are two method
-2: async
+1: Synchronus
+2: Asynchronus
+1: sync -> via http: RestTemplate(by default from Springboot) and WebClient(From Spring webflux project) are two method
+By default WebClient makes async request, for sync we need to use .block() method.
+We will call the another service using WebClient using the uri of that service
+EX: InventoryResponse[] inventoryResponses = webClient.get()
+                    .uri("http://localhost:8082/api/inventory",
+                            uriBuilder -> uriBuilder.queryParam("skuCode", skuCodes).build())
+                    .retrieve()
+                    .bodyToMono(InventoryResponse[].class)
+                    .block();
+
+Service Discovery: We can not expect a fix URL for a particular micro-service bcz there can be multiple instance of
+ a microservice and each instance can have a dynamic ip address. Service Discovery helps in this scenario. There should be
+ a Discovery Server which should have all the information about the services(ex: service-name, ip-add, uri,ports, isUp etc).
+ When a service initialized then it will try to register itself with Discovery server with all the info about it, this data is
+ known as service registry.
+ When Service A wants to communicate with Service B then first it will check with the Discovery server for Service B,
+ the Discovery server will tell the info(ip,port) about Service B to Service A. Now A can use the info to communicate with B.
+ Here we have avoided the hardcoding of urls of services by using discovery server.
+ Discovery server also shared it's copy of service registry to services so in case Discovery Server is down then service
+ can refer their own local copy of registry(it might not be latest but still serves purpose).
