@@ -38,3 +38,13 @@ invoke, so client side load balancing is used to resolve this issue.
 
 If Discovery server is down then services will look into their local registry and make the calls, but if all the services are
 down and then restart but discovery server is still down then they might not be able to communicate, in this case discovery is required.
+
+API Gateway: Acts as an entry points and routes the user requests. Rules need to be configured for routing.
+Routing based on Request Headers
+Authentication
+Security
+Load Balancing: Decide which instance of service to call.
+SSL Termination
+Spring cloud gateway(spring framwork's api gateway) having some features like Security, rate-limiting, circuit-
+breaker integration, path rewriting etc.
+Doc for more details of predicate: https://docs.spring.io/spring-cloud-gateway/docs/current/reference/html/#gateway-request-predicates-factories
