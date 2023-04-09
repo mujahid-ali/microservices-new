@@ -15,7 +15,7 @@ EX: InventoryResponse[] inventoryResponses = webClient.get()
                     .bodyToMono(InventoryResponse[].class)
                     .block();
 
-Service Discovery: We can not expect a fix URL for a particular micro-service bcz there can be multiple instance of
+Service Discovery(Eureka): We can not expect a fix URL for a particular micro-service bcz there can be multiple instance of
  a microservice and each instance can have a dynamic ip address. Service Discovery helps in this scenario. There should be
  a Discovery Server which should have all the information about the services(ex: service-name, ip-add, uri,ports, isUp etc).
  When a service initialized then it will try to register itself with Discovery server with all the info about it, this data is
@@ -25,3 +25,8 @@ Service Discovery: We can not expect a fix URL for a particular micro-service bc
  Here we have avoided the hardcoding of urls of services by using discovery server.
  Discovery server also shared it's copy of service registry to services so in case Discovery Server is down then service
  can refer their own local copy of registry(it might not be latest but still serves purpose).
+
+ https://spring.io/projects/spring-cloud-netflix Service Discovery: Eureka instances can be registered
+ @EnableEurekaServer annotation will make the app/class as Eureka Discovery Server.
+ @EnableEurekaClient annotation will make the service as discoverable for eureka server and
+  adding the eureka server info in app.prop file will tell about the server it should add: eureka.client.serviceUrl.defaultZone=http://localhost:8761/eureka
