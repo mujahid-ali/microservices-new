@@ -48,3 +48,9 @@ SSL Termination
 Spring cloud gateway(spring framwork's api gateway) having some features like Security, rate-limiting, circuit-
 breaker integration, path rewriting etc.
 Doc for more details of predicate: https://docs.spring.io/spring-cloud-gateway/docs/current/reference/html/#gateway-request-predicates-factories
+
+
+KeyCloak: docker run -p 8181:8080 -e KEYCLOAK_ADMIN=admin -e KEYCLOAK_ADMIN_PASSWORD=admin quay.io/keycloak/keycloak:18.0.0 start-dev
+We are using keycloak for securing our application. we can use above docker command to use it.
+@EnableWebFluxSecurity is no mvc/web else @EnableWebSecurity to enable security.
+configure method can be override for defining security rules.
