@@ -81,3 +81,22 @@ http://localhost:8081/actuator/health to check circuit-breaker status
 http://localhost:8081/actuator/
 http://localhost:8081/actuator/retryevents
 http://localhost:8081/actuator/timelimiterevents
+
+
+Distributed Tracing:
+It helps us to track the request from start to finish and help in debugging the issue.
+Ex-> Why a request failed and where it failed ?
+traceId is used to identify a request, spanId(number of trips a request is taking inside the system)
+traceId unique identifier for whole request from start to end.
+spanId unique identifier at every step or service(api-gateway -> span1, order -> span2)
+So, a combination of both trace and span id is used to identify performance and issues for a request.
+
+Sleuth and zipkin is used: https://zipkin.io/pages/quickstart.html
+docker run -d -p 9411:9411 openzipkin/zipkin
+http://localhost:9411/zipkin/
+
+Debug logs with traceId and spanID: INFO [product-service,0e6782babf7a223b,ce94079375c18f4b]
+We are calling inventory service in a new thread, so it's considered as a new request.
+If we remove circuit breaker and Completable and rerun we would be able to see the complete path
+from api-gateway -> order-service -> inventory-service in zipkin server.
+To be able to trace for threads as well we need to enable/create own spans. Tracer from Sleuth.
