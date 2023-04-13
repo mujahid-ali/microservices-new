@@ -54,3 +54,30 @@ KeyCloak: docker run -p 8181:8080 -e KEYCLOAK_ADMIN=admin -e KEYCLOAK_ADMIN_PASS
 We are using keycloak for securing our application. we can use above docker command to use it.
 @EnableWebFluxSecurity is no mvc/web else @EnableWebSecurity to enable security.
 configure method can be override for defining security rules.
+Run command in terminal: docker run -p 8181:8080 -e KEYCLOAK_ADMIN=admin -e KEYCLOAK_ADMIN_PASSWORD=admin quay.io/keycloak/keycloak:18.0.0 start-dev
+go to :-> http://localhost:8181/ -> Administration Console -> admin/admin -> add realm -> spring-boot-microservices-realm -> create
+-> clients -> create -> client ID: spring-cloud-client, protocol:openid connect -> save -> select access type: confidential,
+disable: direct and flow, enable: Service Accounts Enabled: ON -> save -> Credentials -> Secret
+
+Open postman:-> Authorization -> Type: OAuth2.0 ->
+Access Token URL: http://localhost:8181/realms/spring-boot-microservices-realm/protocol/openid-connect/token
+Client ID: spring-cloud-client
+Secret: from 8181 server
+Scope: openid offline_access
+Get New Access Token
+Use Token
+
+Resilience4J Circuit Breaker: For resilient apps. fail fast and respond fast. Avoid cascading failure.
+It is nothing maintaining set of stats in the app. Open -> Half open -> Closed -> Open.
+Doc: https://resilience4j.readme.io/docs
+SneakyThrows for catching the exceptions(not for prod env).
+when Timeout and then some retry can be implemented.
+Ex: Application.properties config
+resilience4j.timelimiter.instances.inventory.timeout-duration=3s @TimeLimiter
+resilience4j.retry.instances.inventory.max-attempts=3 @Retry
+resilience4j.retry.instances.inventory.wait-duration=5s @Retry
+
+http://localhost:8081/actuator/health to check circuit-breaker status
+http://localhost:8081/actuator/
+http://localhost:8081/actuator/retryevents
+http://localhost:8081/actuator/timelimiterevents
