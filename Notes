@@ -100,3 +100,19 @@ We are calling inventory service in a new thread, so it's considered as a new re
 If we remove circuit breaker and Completable and rerun we would be able to see the complete path
 from api-gateway -> order-service -> inventory-service in zipkin server.
 To be able to trace for threads as well we need to enable/create own spans. Tracer from Sleuth.
+
+Event Driven Architecture using Kafka:
+order-service is producer and notification-service is consumer
+docker: https://developer.confluent.io/quickstart/kafka-docker/
+docker-compose.yml
+open terminal and go to microservices-new having docker-compose.yml and run
+docker compose up -d
+https://spring.io/projects/spring-kafka
+https://docs.spring.io/spring-kafka/reference/html/
+order-service will send notification and notification-service is subscribed to order-service.
+order-service is producer: kafkaTemplate.send("notificationTopic", ) sending topic and
+notification-service is consumer, consuming the topic defined in application.properties.
+
+
+Dockerize the application:
+jib builds containers without using a Dockerfile or requiring a Docker installation: https://cloud.google.com/java/getting-started/jib
