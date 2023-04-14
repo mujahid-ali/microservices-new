@@ -21,8 +21,7 @@ public class OrderController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @CircuitBreaker(name = "inventory", fallbackMethod = "fallbackMethod")
-    @TimeLimiter(name = "inventory") // this inventory and above inventory name are taken from app.prop file
-    // resilience4j.timelimiter.instances.inventory.timeout-duration=3s
+    @TimeLimiter(name = "inventory") // this inventory and above inventory name are taken from app.prop file resilience4j.timelimiter.instances.inventory.timeout-duration=3s
     @Retry(name = "inventory")
     public CompletableFuture<String> placeOrder(@RequestBody OrderRequest orderRequest) {
         return CompletableFuture.supplyAsync(() -> orderService.placeOrder(orderRequest));
