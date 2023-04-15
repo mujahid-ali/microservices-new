@@ -119,3 +119,62 @@ jib builds containers without using a Dockerfile or requiring a Docker installat
 
 
 complete code: https://github.com/SaiUpadhyayula/spring-boot-microservices
+
+Testing
+--------------------------------------------------------------------------
+Add dependency:
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.6.2</version>
+            <scope>test</scope>
+        </dependency>
+
+ go to service.CommentService and pres ctr + shit + t and select method to generate test, make test class public.
+ junit will provide -> assertions.assert
+
+ a better choice is to use:-> assertj, assert-core which would provide
+ assertThat and makes test more readable.
+
+ Mockito:
+When we need to test a functionality which is dependant on anther class then mockito is useful for mocking the
+behaviour of other classes:
+<dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>1.10.19</version>
+            <scope>test</scope>
+        </dependency>
+
+So, either mock the dependencies or actually inject the dependencies.
+mockito is providing us the dummy objects to continue testing functionality.
+
+@ExtendWith(MockitoExtension.class)
+@Mock
+<dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+
+ @BeforeEach can be used for instantiation and avoid duplication.
+    public void setup()
+
+Testing data access layer with testcontainers:
+Embedded database like H2 can also be used but it has some limitations:
+if we are mysql then using mysql for testing in ci env and maintaining that db is
+a tedious process with maintainence overhead so testcontainers cab be use which provides
+lightweight instance of common databases. It mainly uses docker in the background to create
+containers.
+@TestContainer
+@Container
+both are Junit5 annotations and this will force test container to create a new container for each test
+Ex:-> For each test a new db-container will be created which is bad(slow, unmaitainable).
+So make use of singleton pattern, so that only one db-container is created for all the test, hence improved performance.
+
+MockMVC, Mockito
+@WebMvcTest for controller/rest-api testing
+@MockMvc provides servelet env for rest endpoints
+@MockBean
+
