@@ -102,6 +102,8 @@ from api-gateway -> order-service -> inventory-service in zipkin server.
 To be able to trace for threads as well we need to enable/create own spans. Tracer from Sleuth.
 
 Event Driven Architecture using Kafka:
+Kafka is pull based approach(consumer will poll queue/partition).
+RabbitMQ(RMQ) is push based approach(As soon as message comes to queue, queue will try to push it to consumer).
 order-service is producer and notification-service is consumer
 docker: https://developer.confluent.io/quickstart/kafka-docker/
 docker-compose.yml
@@ -113,6 +115,35 @@ order-service will send notification and notification-service is subscribed to o
 order-service is producer: kafkaTemplate.send("notificationTopic", ) sending topic and
 notification-service is consumer, consuming the topic defined in application.properties.
 
+Components:->
+Producer: Produces messages for a topic, if key is given then hash it find partition, if key or partition not given then select partition on round-robin basis.
+Consumer: Consumes messages for a topic.
+Consumer Group: Group of consumers.
+Cluster: Group of brokers.
+Broker: Kakfka-server or broker is started when we start kafka and it will communicate with producer. It can have multiple topics.  
+Topic: A topic can have multiple partitions.
+Partition: A Partition can have number of offsets. Data is residing in partition/Queue/Leader. Each partition is replicated to another broker for resiliency(follower).
+Offset: The offset or commited_offset number will indicate messages consumes till now. Or it is a pointer pointing to next message that needs to be consumed.
+Zookeeper: It manages the information and state about cluster, broker, topics, partitions and offset. If there is any partition/queue failure then the commited_offset number is already 
+present in zookeper, so this state information is used by follower and follower will start servicing the messages.
+Leader: Message read and write happens through leader.
+Follower: Leader's data is replicated to follower, when leader is down then follower will take it's place and become leader, ensuring 
+high availability even a queue/partition failed/down for some reason.
+Dead letter Queue: Every message has some retry limit, if after retrying the threshold limit, the message is still failing or not consuming then it will be
+sent to dead letter queue and commit_offset is increased to process next message.
+Distributed messaging: Broker is having topic and topic is having partition. There can be multiple brokers serving same topic. Each partition should be copied to at least one more
+broker serving the same topic. First broker having the topic/partition can be considered as Leader and another one as follower, in case of failure of leader, follower will take it's place.
+If there is a topicA serverd by partition-0 and consumed by group1_consumer1 then the same group's consumer will not consume anything from partition-0 but group2_consumer1 can still consume messages 
+from partition-0.
+Advantages: Retry meachanism, async calls, overcoming speed mismatch between producer/consumer hence avoiding data loss, increases reliability.
+
+RabbitMQ:-> 
+Producer talks with an exchange, exchange is binded with a queue(via a routing key). Based on routing key the queue is decided.
+Failed message is sent back to front of queue until all retry exhausted and then send it to dead letter queue.
+Multiple types of exchanges: 
+1: Fanout: push the message to all the associated queue(broadcast)
+2: Direct: routing key is exactly matching with message key then it will rout to corresponding queue.
+3: Topic Exchange: route based on wild card (*abc) or topic name.
 
 Dockerize the application:
 jib builds containers without using a Dockerfile or requiring a Docker installation: https://cloud.google.com/java/getting-started/jib
